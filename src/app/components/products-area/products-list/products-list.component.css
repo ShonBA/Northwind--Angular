@@ -1,0 +1,7 @@
+.headerContainer{
+    display: flex;
+    justify-content: center;
+}
+h4{
+    margin: 0 20px;
+}

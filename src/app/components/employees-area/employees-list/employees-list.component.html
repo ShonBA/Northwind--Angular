@@ -1,0 +1,26 @@
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Title</th>
+            <th>Country</th>
+            <th>City</th>
+            <th>Birthday</th>
+            <th>Image</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let e of employees">
+            <td>{{e.firstName}}</td>
+            <td>{{e.lastName}}</td>
+            <td>{{e.title}}</td>
+            <td>{{e.country}}</td>
+            <td>{{e.city}}</td>
+            <td>{{e.birthDate}}</td>
+            <td><img src={{e.imageUrl}}></td>
+            <td><button (click)="deleteMe(e.id)">❌</button></td>
+        </tr>
+    </tbody>
+</table>

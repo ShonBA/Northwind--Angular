@@ -1,0 +1,26 @@
+<form (ngSubmit)="send()">
+
+    <label>First Name:</label>
+    <input type="text" name="name" [(ngModel)]="employee.firstName">
+
+    <label>Last Name:</label>
+    <input type="text" name="price" [(ngModel)]="employee.lastName">
+
+    <label>Title:</label>
+    <input type="text" name="stock" [(ngModel)]="employee.title">
+
+    <label>Country:</label>
+    <input type="text" name="stock" [(ngModel)]="employee.country">
+
+    <label>City:</label>
+    <input type="text" name="stock" [(ngModel)]="employee.city">
+
+    <label>Birthday:</label>
+    <input type="date" name="stock" [(ngModel)]="employee.birthDate">
+
+    <label>Image:</label>
+    <input type="file" name="image" (change)="saveImage($event)">
+
+    <button>Add</button>
+
+</form>
