@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import routesConfig from '../Utils/routes.config';
 import EmployeeModel from '../models/employee-model';
+import { EmployeesAction, EmployeesActionTypes, employeesStore } from '../redux/employees-state';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,13 @@ export class EmployeesService {
   constructor(private http: HttpClient) { }
 
   public async getAllEmployees(): Promise<EmployeeModel[]> {
-    const observable = this.http.get<EmployeeModel[]>(routesConfig.employeesUrl);
-    const employees = await firstValueFrom(observable);
+    let employees = employeesStore.getState().employees;
+    if (employees.length === 0) {
+      const observable = this.http.get<EmployeeModel[]>(routesConfig.employeesUrl);
+      employees = await firstValueFrom(observable);
+    }
+    const action: EmployeesAction = { type: EmployeesActionTypes.SetEmployees, payload: employees };
+    employeesStore.dispatch(action);
     return employees;
   };
 
@@ -28,11 +34,14 @@ export class EmployeesService {
     formData.append("image", employee.image);
     const observable = this.http.post<EmployeeModel>(routesConfig.employeesUrl, formData);
     const addedEmployee = await firstValueFrom(observable);
-    console.log(addedEmployee);
+    const action: EmployeesAction = { type: EmployeesActionTypes.AddEmployee, payload: addedEmployee };
+    employeesStore.dispatch(action);
   }
 
   public async deleteEmployee(id: number) {
     const observable = this.http.delete(routesConfig.employeesUrl + id);
     await firstValueFrom(observable);
+    const action: EmployeesAction = { type: EmployeesActionTypes.DeleteEmployee, payload: id };
+    employeesStore.dispatch(action);
   }
 }
