@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import routesConfig from '../Utils/routes.config';
 import ProductModel from '../models/product-model';
+import { ProductActionTypes, ProductsAction, productsStore } from '../redux/products-state';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,13 @@ export class ProductsService {
   constructor(private http: HttpClient) { }
 
   public async getAllProducts(): Promise<ProductModel[]> {
-    const observable = this.http.get<ProductModel[]>(routesConfig.productsUrl);
-    const products = await firstValueFrom(observable);
+    let products = productsStore.getState().products;
+    if (products.length === 0) {
+      const observable = this.http.get<ProductModel[]>(routesConfig.productsUrl);
+      products = await firstValueFrom(observable);
+    }
+    const action: ProductsAction = { type: ProductActionTypes.SetProducts, payload: products };
+    productsStore.dispatch(action);
     return products;
   };
 
@@ -25,11 +31,14 @@ export class ProductsService {
     formData.append("image", product.image);
     const observable = this.http.post<ProductModel>(routesConfig.productsUrl, formData);
     const addedProduct = await firstValueFrom(observable);
-    console.log(addedProduct);
+    const action: ProductsAction = { type: ProductActionTypes.AddProduct, payload: addedProduct };
+    productsStore.dispatch(action);
   }
 
   public async deleteProduct(id: number) {
     const observable = this.http.delete(routesConfig.productsUrl + id);
+    const action: ProductsAction = { type: ProductActionTypes.DeleteProduct, payload: id };
+    productsStore.dispatch(action);
     await firstValueFrom(observable);
   }
 
